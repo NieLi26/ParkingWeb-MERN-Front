@@ -1,0 +1,18 @@
+.clock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-block-color: black;
+  /* padding-top: 1rem; */
+}
+
+.timer {
+  /* text-align: center; */
+  /* border-radius: 10rem; */
+  /* background-color: antiquewhite; */
+  font-family: monospace;
+  /* font-size: 4rem; */
+  font-weight: bold;
+  padding: 0 2rem;
+}
+
