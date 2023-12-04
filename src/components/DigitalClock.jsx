@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { formatearTiempoDigitalClock } from '../helpers';
 import '../styles/DigitalClock.css'
 
 const DigitalClock = ({ className }) => {
@@ -17,7 +18,7 @@ const DigitalClock = ({ className }) => {
 
     return (
         <div className="clock">
-            <div className={`timer ${className}`}>{date.toLocaleTimeString()}</div>
+            <div className={`timer ${className}`}>{formatearTiempoDigitalClock(date)}</div>
         </div>
     );
 }

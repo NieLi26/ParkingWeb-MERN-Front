@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 import { toast } from "react-toastify";
 import clienteAxios from "../config/clienteAxios";
+import ModalEliminarPago from "../components/ModalEliminarPago";
 
 const ParkingContext = createContext();
 
@@ -29,6 +30,7 @@ const ParkingProvider = ({ children }) => {
     const [ modalEliminarLote, setModaEliminarLote ] = useState(false);
     const [ modalFormTarifa, setModalFormTarifa ] = useState(false);
     const [ modalEliminarTarifa, setModaEliminarTarifa ] = useState(false);
+    const [ modalEliminarPago, setModalEliminarPago ] = useState(false);
     const [ reservas, setReservas ] = useState([]);
     const [ reserva, setReserva ] = useState({});
     const [ lotes, setLotes ] = useState([]);
@@ -375,6 +377,28 @@ const ParkingProvider = ({ children }) => {
         setCargando(false)
     }
 
+    const eliminarPago = async () => {
+        console.log('ELiminadno pago ...');
+        try {
+          const { data } = await clienteAxios.delete(`/pagos/${pago._id}`);
+        //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
+        //   setLotes(lotesActualizados);
+          obtenerPagos()
+          setPago({})
+          setModalEliminarPago(false)
+          toast.success(data.msg)
+        } catch (error) {
+          console.log(error.response.data.msg);
+          toast.error(error.response.data.msg)
+        }
+    }
+
+    const handleModalEliminarPago = pago => {
+        console.log('hola desde pago');
+        console.log(pago);
+        setPago(pago)
+        setModalEliminarPago(!modalEliminarPago)
+    }
 
     return (
         <ParkingContext.Provider
@@ -441,7 +465,11 @@ const ParkingProvider = ({ children }) => {
                 
                 // PAGOS
                 obtenerPagos,
-                pagos
+                pagos,
+                eliminarPago,
+                handleModalEliminarPago,
+                modalEliminarPago,
+
                 
             }}
         >

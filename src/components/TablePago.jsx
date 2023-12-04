@@ -6,7 +6,7 @@ const headTable = ['Patente', 'Total', 'Metodo Pago']
 
 export default function TablePago() {
 
-    const { pagos, handleModalEliminarTarifa, handleModalEditarTarifa, handleModalCrearTarifa } = useParking()
+    const { pagos, handleModalEliminarPago, handleModalEditarTarifa, handleModalCrearTarifa } = useParking()
     
     return (
       <div className="px-4 sm:px-6 lg:px-8">
@@ -81,7 +81,7 @@ export default function TablePago() {
                           </button>
 
                           <button 
-                            // onClick={() => handleModalEliminarTarifa(tarifa)}
+                            onClick={() => handleModalEliminarPago(pago)}
                             className="text-red-600 hover:text-red-900"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">

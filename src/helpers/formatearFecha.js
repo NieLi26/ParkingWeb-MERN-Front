@@ -37,3 +37,16 @@ export const formatearFechaMenu = fecha => {
     const amPm = nuevaFecha.getHours() < 12 ? "AM" : "PM";
     return nuevaFecha.toLocaleDateString('es-ES', opciones) + ' ' + amPm
 }
+
+export const formatearTiempoDigitalClock = fecha => {
+    const nuevaFecha = new Date(fecha)
+
+    const opciones = {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false, // Usar formato de 24 horas
+      };
+    
+      return nuevaFecha.toLocaleTimeString('es-ES', opciones);
+}
