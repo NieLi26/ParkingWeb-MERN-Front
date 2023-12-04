@@ -35,6 +35,8 @@ const ParkingProvider = ({ children }) => {
     const [ lote, setLote ] = useState({});
     const [ tarifas, setTarifas ] = useState([]);
     const [ tarifa, setTarifa ] = useState({});
+    const [ pagos, setPagos ] = useState([]);
+    const [ pago, setPago ] = useState({});
 
     const handleOpenMenu = () => {
         // setReservas([])
@@ -358,10 +360,26 @@ const ParkingProvider = ({ children }) => {
         }
     }
 
+    // PAGOS
+    const obtenerPagos = async () => {
+        setCargando(true)
+        try {
+            const { data: { pagos, pagination } } = await clienteAxios(`/pagos?page=${pagina}`);
+            console.log(pagos);
+            setPagina(pagination.number)
+            setPagos(pagos);
+            handlePaginator(pagination)
+        } catch (error) {
+            console.log(error.response);
+        }
+        setCargando(false)
+    }
+
 
     return (
         <ParkingContext.Provider
             value={{
+                // MENU HEADER
                 handleOpenMenu,
                 openMenu,
                 obtenerReservas,
@@ -374,12 +392,14 @@ const ParkingProvider = ({ children }) => {
                 handleModalAnularReserva,
                 anularReserva,
 
+                // EXTRAS
                 cargando,
                 pagina,
                 paginator,
                 handlePaginator,
                 handlePagina,
 
+                // RESERVAS
                 modalFormReserva,
                 handleModalCrearReserva,
                 handleModalTerminarReserva,
@@ -391,8 +411,9 @@ const ParkingProvider = ({ children }) => {
                 handleTarifa,
                 handleLote,
                 submitReserva,
-                
+                obtenerLotesEntrada,
 
+                // LOTES
                 modalFormLote,
                 modalEliminarLote,
                 handleModalCrearLote,
@@ -405,6 +426,7 @@ const ParkingProvider = ({ children }) => {
                 setLote,
                 submitLote,
 
+                // TARIFAS
                 modalFormTarifa,
                 modalEliminarTarifa,
                 handleModalCrearTarifa,
@@ -416,9 +438,10 @@ const ParkingProvider = ({ children }) => {
                 tarifa,
                 setTarifa,
                 submitTarifa,
-
-                obtenerLotesEntrada
                 
+                // PAGOS
+                obtenerPagos,
+                pagos
                 
             }}
         >

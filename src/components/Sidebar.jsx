@@ -5,6 +5,7 @@ import XIcon from './svg/XIcon'
 import EntradaIcon from './svg/EntradaIcon'
 import LoteIcon from './svg/LoteIcon'
 import TarifaIcon from './svg/TarifaIcon'
+import PagoIcon from './svg/PagoIcon'
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
 
@@ -14,6 +15,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
       { name: 'Entrada', href: '/', icon: EntradaIcon, current: true },
       { name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false },
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
+      { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
   ])
 
     useEffect(() => {
@@ -118,9 +120,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
                 alt="Workflow"
               /> */}
               <img
-                className="h-12 w-auto"
+                className="h-12 w-auto rounded-xl"
                 src="logo.ico"
-                alt="Workflow"
+                alt="logo Parking Web"
               />
             </div>
             <div className="mt-5 flex-grow flex flex-col">

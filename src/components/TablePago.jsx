@@ -1,12 +1,12 @@
 import useParking from "../hooks/useParking"
 import Paginacion from "./Paginacion"
-import { formatearDinero } from '../helpers'
+import { formatearDinero } from "../helpers"
 
-const headTable = [ 'Precio Minuto', 'Precio Base', 'Desde los']
+const headTable = ['Patente', 'Total', 'Metodo Pago']
 
-export default function TableTarifa() {
+export default function TablePago() {
 
-    const { tarifas, handleModalEliminarTarifa, handleModalEditarTarifa, handleModalCrearTarifa } = useParking()
+    const { pagos, handleModalEliminarTarifa, handleModalEditarTarifa, handleModalCrearTarifa } = useParking()
     
     return (
       <div className="px-4 sm:px-6 lg:px-8">
@@ -14,12 +14,12 @@ export default function TableTarifa() {
           <div className="sm:flex-auto">
             <h1 className="text-xl font-semibold text-gray-900">Lotes</h1>
             <p className="mt-2 text-sm text-gray-700">
-            Ver, Crea, Editar y Eliminar Tus Tarifas.
+            Ver, Crea, Editar y Eliminar Tus pagos.
             </p>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
             <button
-              onClick={handleModalCrearTarifa}
+            //   onClick={handleModalCrearTarifa}
               type="button"
               className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto"
             >
@@ -37,7 +37,7 @@ export default function TableTarifa() {
                         <th
                            className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 sm:pl-6"
                         >
-                            Nombre
+                            N° Boleta
                         </th>
 
                         { headTable.map( (head, i) => (
@@ -57,21 +57,21 @@ export default function TableTarifa() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
-                    {tarifas.map((tarifa) => (
-                      <tr key={tarifa._id}>
+                    {pagos.map((pago) => (
+                      <tr key={pago._id}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
-                          {tarifa.nombre}
+                          {pago.numero}
                         </td>
                         
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatearDinero(tarifa.precioMinuto)}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{pago.reserva.patente}</td>
 
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatearDinero(tarifa.precioBase)}</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{formatearDinero(pago.total)}</td>
 
-                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{tarifa.desdeMinuto} Min</td>
+                        <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{pago.metodoPago}</td>
 
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                           <button 
-                              onClick={() => handleModalEditarTarifa(tarifa)}
+                            //   onClick={() => handleModalEditarTarifa(tarifa)}
                               className="text-yellow-600 hover:text-yellow-900 mr-2"
                               >
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -81,7 +81,7 @@ export default function TableTarifa() {
                           </button>
 
                           <button 
-                            onClick={() => handleModalEliminarTarifa(tarifa)}
+                            // onClick={() => handleModalEliminarTarifa(tarifa)}
                             className="text-red-600 hover:text-red-900"
                           >
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
