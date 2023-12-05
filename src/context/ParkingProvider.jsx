@@ -39,6 +39,7 @@ const ParkingProvider = ({ children }) => {
     const [ tarifa, setTarifa ] = useState({});
     const [ pagos, setPagos ] = useState([]);
     const [ pago, setPago ] = useState({});
+    const [ reservasPaginadas, setReservasPaginadas ] = useState([]);
 
     const handleOpenMenu = () => {
         // setReservas([])
@@ -46,7 +47,7 @@ const ParkingProvider = ({ children }) => {
     }
 
     const obtenerReservas = async ({q = '', limite ='', orden = ''}) => {
-        console.log('Se ACtivo obtener reservas');
+
         try {
             const { data } = await clienteAxios(`/reservas/buscar/patente?q=${q}&limite=${limite}&orden=${orden}`);
             console.log(data);
@@ -400,6 +401,21 @@ const ParkingProvider = ({ children }) => {
         setModalEliminarPago(!modalEliminarPago)
     }
 
+    // RESERVAS
+    const obtenerReservasPaginadas = async () => {
+        setCargando(true)
+        try {
+            const { data: { reservas, pagination } } = await clienteAxios(`/reservas?page=${pagina}`);
+            console.log('Reservas', reservas);
+            setPagina(pagination.number)
+            setReservasPaginadas(reservas);
+            handlePaginator(pagination)
+        } catch (error) {
+            console.log(error.response);
+        }
+        setCargando(false)
+    }
+
     return (
         <ParkingContext.Provider
             value={{
@@ -436,6 +452,9 @@ const ParkingProvider = ({ children }) => {
                 handleLote,
                 submitReserva,
                 obtenerLotesEntrada,
+
+                obtenerReservasPaginadas,
+                reservasPaginadas,
 
                 // LOTES
                 modalFormLote,

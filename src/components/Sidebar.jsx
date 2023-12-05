@@ -6,6 +6,7 @@ import EntradaIcon from './svg/EntradaIcon'
 import LoteIcon from './svg/LoteIcon'
 import TarifaIcon from './svg/TarifaIcon'
 import PagoIcon from './svg/PagoIcon'
+import ReservaIcon from './svg/ReservaIcon'
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
 
@@ -16,6 +17,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
       { name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false },
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
       { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
+      { name: 'Reservas', href: '/reservas', icon: ReservaIcon, current: false },
   ])
 
     useEffect(() => {
