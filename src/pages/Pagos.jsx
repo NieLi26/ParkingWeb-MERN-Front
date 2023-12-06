@@ -20,7 +20,7 @@ const Pagos = () => {
 
             {/* <ModalFormTarifa /> */}
             
-            <ModalEliminarPago />
+            {/* <ModalEliminarPago /> */}
         </>
     )
 }

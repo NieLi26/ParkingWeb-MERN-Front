@@ -199,10 +199,10 @@ export default function MenuReservas() {
                             </button> */}
 
                             <button
-                            onClick={() => {
-                              handleModalAnularReserva()
-                              handleReserva(activeOption)
-                            }}
+                              onClick={() => {
+                                handleModalAnularReserva()
+                                handleReserva(activeOption)
+                              }}
                               type="button"
                               className="mt-6 w-full rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                             >

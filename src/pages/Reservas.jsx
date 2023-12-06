@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import TableReserva from '../components/TableReserva'
-// import ModalFormTarifa from "../components/ModalFormTarifa";
+import ModalCorregirAnulacion from "../components/ModalCorregirAnulacion";
 // import ModalEliminarPago from "../components/ModalEliminarPago";
 import useParking from "../hooks/useParking";
 import GlobalSpinner from '../components/GlobalSpinner';
@@ -18,7 +18,7 @@ const Reservas = () => {
         <>
             <TableReserva />
 
-            {/* <ModalFormTarifa /> */}
+            <ModalCorregirAnulacion />
             
             {/* <ModalEliminarPago /> */}
         </>

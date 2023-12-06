@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ParkingLayout from './layouts/ParkingLayout';
 import Entrada from './pages/Entrada';
+import Salida from './pages/Salida';
 import Lotes from './pages/Lotes';
 import Tarifas from './pages/Tarifas';
 import Pagos from './pages/Pagos';
@@ -17,9 +18,13 @@ const router = createBrowserRouter([
         element: <Entrada />
       },
       {
-        path: '/lotes',
-        element: <Lotes />
+        path: '/salida',
+        element: <Salida />
       },
+      // {
+      //   path: '/lotes',
+      //   element: <Lotes />
+      // },
       {
         path: '/tarifas',
         element: <Tarifas />

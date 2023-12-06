@@ -1,8 +1,10 @@
 import { Fragment, useEffect, useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
+import useParking from "../hooks/useParking"
 import XIcon from './svg/XIcon'
 import EntradaIcon from './svg/EntradaIcon'
+import SalidaIcon from './svg/SalidaIcon'
 import LoteIcon from './svg/LoteIcon'
 import TarifaIcon from './svg/TarifaIcon'
 import PagoIcon from './svg/PagoIcon'
@@ -10,11 +12,14 @@ import ReservaIcon from './svg/ReservaIcon'
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
 
+    const { handlePagina } = useParking()
+
     const location = useLocation()
 
     const [ navigation, setNavigation ] = useState([
       { name: 'Entrada', href: '/', icon: EntradaIcon, current: true },
-      { name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false },
+      { name: 'Salida', href: '/salida', icon: SalidaIcon, current: false },
+      // { name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false },
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
       { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
       { name: 'Reservas', href: '/reservas', icon: ReservaIcon, current: false },
@@ -132,6 +137,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
                 {navigation.map((item) => (
                   <Link
                     key={item.name}
+                    onClick={() => handlePagina(1)}
                     to={item.href}
                     className={classNames(
                       item.current ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',

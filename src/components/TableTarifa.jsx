@@ -12,9 +12,9 @@ export default function TableTarifa() {
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="sm:flex sm:items-center">
           <div className="sm:flex-auto">
-            <h1 className="text-xl font-semibold text-gray-900">Lotes</h1>
+            <h1 className="text-xl font-semibold text-gray-900">Tarifas</h1>
             <p className="mt-2 text-sm text-gray-700">
-            Ver, Crea, Editar y Eliminar Tus Tarifas.
+            Ver, Crear, Editar y Eliminar Tus Tarifas.
             </p>
           </div>
           <div className="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">

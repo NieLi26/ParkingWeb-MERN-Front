@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import clienteAxios from "../config/clienteAxios";
 import ModalEliminarPago from "../components/ModalEliminarPago";
@@ -20,7 +20,6 @@ const ParkingProvider = ({ children }) => {
         setPagina(pagina)
     }
     
-
     const [ openMenu, setOpenMenu ] = useState(false)
     const [ modalPagarReserva, setModalPagarReserva ] = useState(false);
     const [ modalFormReserva, setModalFormReserva ] = useState(false);
@@ -31,6 +30,7 @@ const ParkingProvider = ({ children }) => {
     const [ modalFormTarifa, setModalFormTarifa ] = useState(false);
     const [ modalEliminarTarifa, setModaEliminarTarifa ] = useState(false);
     const [ modalEliminarPago, setModalEliminarPago ] = useState(false);
+    const [ modalCorregirAnulacionReserva, setModalCorregirAnulacionReserva ] = useState(false);
     const [ reservas, setReservas ] = useState([]);
     const [ reserva, setReserva ] = useState({});
     const [ lotes, setLotes ] = useState([]);
@@ -40,6 +40,7 @@ const ParkingProvider = ({ children }) => {
     const [ pagos, setPagos ] = useState([]);
     const [ pago, setPago ] = useState({});
     const [ reservasPaginadas, setReservasPaginadas ] = useState([]);
+    
 
     const handleOpenMenu = () => {
         // setReservas([])
@@ -161,7 +162,7 @@ const ParkingProvider = ({ children }) => {
             // const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
             // setLotes(lotesActualizados)
             handleModalPagarReserva()
-            toast.success(`Reserva Pagada Correctamente`)
+            toast.success(`Reserva con patente ${data.patente} Pagada Correctamente`)
             obtenerReservas({limite: 3, orden: 'desc'})
             setOpenMenu(true)
         } catch (error) {
@@ -183,6 +184,7 @@ const ParkingProvider = ({ children }) => {
             toast.error(error.response.data.msg)
         }
     }
+
     // LOTES
     const handleModalCrearLote = () => {
         setLote({})
@@ -401,7 +403,12 @@ const ParkingProvider = ({ children }) => {
         setModalEliminarPago(!modalEliminarPago)
     }
 
-    // RESERVAS
+    // RESERVAS TABLA
+    const handleModalCorregirAnulacionReserva = reserva => {
+        setReserva(reserva)
+        setModalCorregirAnulacionReserva(!modalCorregirAnulacionReserva);
+    }
+
     const obtenerReservasPaginadas = async () => {
         setCargando(true)
         try {
@@ -415,6 +422,44 @@ const ParkingProvider = ({ children }) => {
         }
         setCargando(false)
     }
+
+    const corregirAnulacionReserva = async ({ metodoPago }) => {
+        try {
+            const { data } = await clienteAxios.post('/pagos', { reserva: reserva._id, metodoPago });
+            console.log(data);
+            const actualizacionReservasPaginadas = reservasPaginadas.map( reservaState => reservaState._id === data._id ? data : reservaState )
+            setReservasPaginadas(actualizacionReservasPaginadas);
+            setReserva({})
+            setModalCorregirAnulacionReserva(false)
+            toast.success(`Reserva con patente ${data.patente} Pagada Correctamente`)
+        } catch (error) {
+            console.log(error.response);
+            toast.error(error.response.data.msg)
+        }
+    }
+
+
+    // const pagarReserva = async ({ reserva, metodoPago }) => {
+    //     try {
+    //         const { data } = await clienteAxios.post('/pagos', { reserva, metodoPago });
+    //         console.log(data);
+    //         // const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
+    //         // setLotes(lotesActualizados)
+    //         handleModalPagarReserva()
+    //         toast.success(`Reserva Pagada Correctamente`)
+    //         obtenerReservas({limite: 3, orden: 'desc'})
+    //         setOpenMenu(true)
+    //     } catch (error) {
+    //         console.log(error.response);
+    //         toast.error(error.response)
+    //     }
+    // }
+
+    // const handleModalPagarReserva = () => {
+    //     setOpenMenu(false)
+    //     setReserva({})
+    //     setModalPagarReserva(!modalPagarReserva);
+    // }
 
     return (
         <ParkingContext.Provider
@@ -455,6 +500,9 @@ const ParkingProvider = ({ children }) => {
 
                 obtenerReservasPaginadas,
                 reservasPaginadas,
+                corregirAnulacionReserva,
+                handleModalCorregirAnulacionReserva,
+                modalCorregirAnulacionReserva,
 
                 // LOTES
                 modalFormLote,

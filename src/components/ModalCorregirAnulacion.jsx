@@ -12,24 +12,15 @@ const STATE_INICIAL = {
 
 const METODOS_PAGO = ['Efectivo', 'Transferencia', 'Debito', 'Credito']
 
-const ModalPagarReserva = () => {
-    const { handleModalPagarReserva, modalPagarReserva, pagarReserva, cargando, reserva, handleOpenMenu, obtenerReservas } = useParking();
+const ModalCorregirAnulacion = () => {
+    const { handleModalCorregirAnulacionReserva, modalCorregirAnulacionReserva, corregirAnulacionReserva, cargando, reserva } = useParking();
 
     const [ form, setForm ] = useState(STATE_INICIAL)
 
-    // useEffect(() => {
-    //     if ( reserva?._id ) {
-    //         setId(reserva._id)
-    //         setForm({
-    //             ...form,
-    //             patente: reserva.patente,
-    //             tarifa: reserva.tarifa
-    //         })
-    //         return;
-    //     }
-    //     setId('')
-    //     setForm(STATE_INICIAL)
-    // }, [])
+
+    useEffect(() => {
+        setForm(STATE_INICIAL)
+    }, [reserva])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -41,7 +32,7 @@ const ModalPagarReserva = () => {
             return;
         }
 
-        pagarReserva(form)
+        corregirAnulacionReserva(form)
     }
 
     const handleChange = e => {
@@ -50,26 +41,12 @@ const ModalPagarReserva = () => {
             [e.target.name]: e.target.value
         })
     }
-    
-    useEffect(() => {
-        if ( reserva?._id ) {
-            console.log(reserva);
-            setForm({
-                ...form,
-                reserva: reserva._id
-            })
-            return
-        }
-        setForm({
-            ...form,
-            reserva: ''
-        })
-    }, [reserva])
+
 
   return (
 
-    <Transition.Root show={ modalPagarReserva } as={Fragment}>
-        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleModalPagarReserva}>
+    <Transition.Root show={ modalCorregirAnulacionReserva } as={Fragment}>
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleModalCorregirAnulacionReserva}>
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <Transition.Child
                     as={Fragment}
@@ -106,7 +83,7 @@ const ModalPagarReserva = () => {
                             <button
                                 type="button"
                                 className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                onClick={ handleModalPagarReserva }
+                                onClick={ handleModalCorregirAnulacionReserva }
                             >
                             <span className="sr-only">Cerrar</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -119,7 +96,7 @@ const ModalPagarReserva = () => {
                         <div className="sm:flex sm:items-start">
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                 <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                  Pagar Reserva
+                                  Pagar Reserva Anulada
                                 </Dialog.Title>
                             
                                 <form 
@@ -161,11 +138,7 @@ const ModalPagarReserva = () => {
                                     <div className="flex pt-5">
                                         <button
                                             type="button"
-                                            onClick={() => {
-                                                handleModalPagarReserva()
-                                                handleOpenMenu()
-                                                // obtenerReservas({limite: 3, orden: 'desc'})
-                                            }}
+                                            onClick={handleModalCorregirAnulacionReserva}
                                             className="w-full bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
                                             Cancelar
@@ -173,7 +146,7 @@ const ModalPagarReserva = () => {
                                         <button
                                             type="submit"
                                             disabled={cargando && true}
-                                            className="disabled:opacity-50 disabled:bg-green-600 disabled:cursor-not-allowed w-full ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                                            className="disabled:opacity-50 disabled:bg-yellow-600 disabled:cursor-not-allowed w-full ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
                                         >
                                             { cargando ? <Spinner /> : <span>Guardar</span> }
                                         </button>
@@ -191,5 +164,5 @@ const ModalPagarReserva = () => {
   );
 };
 
-export default ModalPagarReserva;
+export default ModalCorregirAnulacion;
 
