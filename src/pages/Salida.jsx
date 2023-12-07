@@ -16,7 +16,7 @@ function classNames(...classes) {
 
 export default function Salida() {
 
-  const { openMenu, handleOpenMenu, obtenerReservas, reservas, reserva, handleReserva, handleModalPagarReserva, handleModalAnularReserva } = useParking();
+  const { obtenerReservas, reservas, reserva, handleReserva, handleModalPagarReserva, handleModalAnularReserva } = useParking();
 
   const [query, setQuery] = useState('')
 
@@ -68,7 +68,7 @@ export default function Salida() {
             />
           </svg> */}
           <h2 className="mt-2 text-lg font-medium text-gray-900">Ingrese la Patente</h2>
-          <p className="mt-1 text-sm text-gray-500">You haven’t added any team members to your project yet.</p>
+          <p className="mt-1 text-sm text-gray-500">Puede Pagar o Anular su Patente.</p>
         </div>
         <form 
           onSubmit={handleSubmit}
@@ -112,7 +112,7 @@ export default function Salida() {
                             }}
                             className="absolute inset-y-0 right-0 flex items-center pr-2">
                             <XIcon 
-                              className="h-5 w-5 text-gray-400"
+                              className="h-5 w-5 text-red-400"
                             />
                           </button>
                         )}

@@ -164,7 +164,7 @@ const ParkingProvider = ({ children }) => {
             handleModalPagarReserva()
             toast.success(`Reserva con patente ${data.patente} Pagada Correctamente`)
             obtenerReservas({limite: 3, orden: 'desc'})
-            setOpenMenu(true)
+            // setOpenMenu(true)
         } catch (error) {
             console.log(error.response);
             toast.error(error.response)
@@ -178,7 +178,7 @@ const ParkingProvider = ({ children }) => {
             handleModalAnularReserva()
             toast.success(`Reserva Anulada Correctamente`)
             obtenerReservas({limite: 3, orden: 'desc'})
-            setOpenMenu(true)
+            // setOpenMenu(true)
         } catch (error) {
             console.log(error.response);
             toast.error(error.response.data.msg)
@@ -438,6 +438,35 @@ const ParkingProvider = ({ children }) => {
         }
     }
 
+    // const pagarReservaPagina = async ({ reserva, metodoPago }) => {
+    //     try {
+    //         const { data } = await clienteAxios.post('/pagos', { reserva, metodoPago });
+    //         console.log(data);
+    //         // const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
+    //         // setLotes(lotesActualizados)
+    //         handleModalPagarReserva()
+    //         toast.success(`Reserva con patente ${data.patente} Pagada Correctamente`)
+    //         // obtenerReservas({limite: 3, orden: 'desc'})
+    //         // setOpenMenu(true)
+    //     } catch (error) {
+    //         console.log(error.response);
+    //         toast.error(error.response)
+    //     }
+    // }
+
+    // const anularReservaPagina = async ({ observacion }) => {
+    //     try {
+    //         const { data } = await clienteAxios.put(`/reservas/condicion/${reserva._id}`, { condicion: 'Anulada', observacion });
+    //         console.log(data);
+    //         handleModalAnularReserva()
+    //         toast.success(`Reserva Anulada Correctamente`)
+    //         // obtenerReservas({limite: 3, orden: 'desc'})
+    //         // setOpenMenu(true)
+    //     } catch (error) {
+    //         console.log(error.response);
+    //         toast.error(error.response.data.msg)
+    //     }
+    // }
 
     // const pagarReserva = async ({ reserva, metodoPago }) => {
     //     try {
@@ -503,6 +532,9 @@ const ParkingProvider = ({ children }) => {
                 corregirAnulacionReserva,
                 handleModalCorregirAnulacionReserva,
                 modalCorregirAnulacionReserva,
+
+                // pagarReservaPagina,
+                // anularReservaPagina,
 
                 // LOTES
                 modalFormLote,
