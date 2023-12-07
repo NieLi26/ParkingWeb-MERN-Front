@@ -94,11 +94,11 @@ export default function TableTarifa() {
                     ))}
                   </tbody>
                 </table>
+                <Paginacion />
               </div>
             </div>
           </div>
         </div>
-        <Paginacion />
       </div>
     )
 }

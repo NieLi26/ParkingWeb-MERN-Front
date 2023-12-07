@@ -118,11 +118,11 @@ export default function TablePago() {
                     ))}
                   </tbody>
                 </table>
+                <Paginacion />
               </div>
             </div>
           </div>
         </div>
-        <Paginacion />
       </div>
     )
 }

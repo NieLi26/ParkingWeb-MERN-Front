@@ -87,11 +87,11 @@ export default function TableLote() {
                     ))}
                   </tbody>
                 </table>
+                <Paginacion />
               </div>
             </div>
           </div>
         </div>
-        <Paginacion />
       </div>
     )
 }
