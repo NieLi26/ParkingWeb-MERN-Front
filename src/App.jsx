@@ -6,7 +6,11 @@ import Lotes from './pages/Lotes';
 import Tarifas from './pages/Tarifas';
 import Pagos from './pages/Pagos';
 import Reservas from './pages/Reservas';
+import Home from './pages/Home';
+import DashBoard from './pages/DashBoard';
+import Login from './pages/Login';
 import { ParkingProvider } from './context/ParkingProvider';
+import { AuthProvider } from './context/AuthProvider';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +19,10 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
+        element: <Home />
+      },
+      {
+        path: '/entrada',
         element: <Entrada />
       },
       {
@@ -36,8 +44,16 @@ const router = createBrowserRouter([
       {
         path: '/reservas',
         element: <Reservas />
+      },
+      {
+        path: '/dashboard',
+        element: <DashBoard />
       }
     ]
+  },
+  {
+    path: '/login',
+    element: <Login />
   }
 ])
 
@@ -45,9 +61,12 @@ const router = createBrowserRouter([
 function App() {
 
   return (
-    <ParkingProvider>
-      <RouterProvider router={router} />
-    </ParkingProvider>
+    <AuthProvider>
+      <ParkingProvider>
+        <RouterProvider router={router} />
+      </ParkingProvider>
+    </AuthProvider>
+
   )
 }
 

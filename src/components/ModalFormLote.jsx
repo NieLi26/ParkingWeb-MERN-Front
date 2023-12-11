@@ -11,7 +11,7 @@ const STATE_INICIAL = {
 }
 
 const ModalFormLote = () => {
-    console.log('k paso');
+
     const { handleModalCrearLote, modalFormLote, cargando, lote, submitLote } = useParking();
 
     const [ id, setId ] = useState('');
@@ -40,7 +40,6 @@ const ModalFormLote = () => {
             }
             return;
         }
-
 
         await submitLote({ ...form, id })
     }

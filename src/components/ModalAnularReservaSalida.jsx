@@ -11,21 +11,21 @@ const STATE_INICIAL = {
     observacion: ''
 }
 
-const ModalAnularReserva = () => {
-    const { handleModalAnularReserva, modalAnularReserva, reserva, cargando, anularReserva, handleOpenMenu } = useParking();
+const ModalAnularReservaSalida = () => {
+    const { handleModalAnularReservaSalida, modalAnularReservaSalida, reservaSalida, cargando, anularReserva } = useParking();
 
     const [ form, setForm ] = useState(STATE_INICIAL)
 
     useEffect(() => {
 
-        if ( reserva?._id ) {
+        if ( reservaSalida?._id ) {
             setForm({
                 ...form,
             })
             return;
         }
         setForm(STATE_INICIAL)
-    }, [reserva])
+    }, [reservaSalida])
 
     const handleSubmit = async e => {
         e.preventDefault()
@@ -50,11 +50,8 @@ const ModalAnularReserva = () => {
 
   return (
 
-    <Transition.Root show={ modalAnularReserva } as={Fragment}>
-        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => {
-            handleModalAnularReserva()
-            handleOpenMenu()
-        }}>
+    <Transition.Root show={ modalAnularReservaSalida } as={Fragment}>
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleModalAnularReservaSalida}>
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <Transition.Child
                     as={Fragment}
@@ -91,10 +88,7 @@ const ModalAnularReserva = () => {
                             <button
                                 type="button"
                                 className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                onClick={ () => {
-                                    handleModalAnularReserva()
-                                    handleOpenMenu()
-                                }}
+                                onClick={ handleModalAnularReservaSalida }
                             >
                             <span className="sr-only">Cerrar</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -142,8 +136,7 @@ const ModalAnularReserva = () => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                handleModalAnularReserva()
-                                                handleOpenMenu()
+                                                handleModalAnularReservaSalida()
                                             }}
                                             className="w-full bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
@@ -170,5 +163,5 @@ const ModalAnularReserva = () => {
   );
 };
 
-export default ModalAnularReserva;
+export default ModalAnularReservaSalida;
 

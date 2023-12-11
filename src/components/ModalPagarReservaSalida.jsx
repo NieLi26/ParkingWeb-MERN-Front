@@ -1,35 +1,25 @@
 import { Fragment, useState, useEffect } from "react";
-import { Dialog, Combobox, Transition } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { toast } from "react-toastify";
 import Spinner from "./Spinner";
 import useParking from "../hooks/useParking";
-import DigitalClock from "./DigitalClock";
-import validarAnularReserva from "../validation/validarAnularReserva";
-import { formatearFecha } from "../helpers/formatearFecha";
+import validarCrearPago from "../validation/validarCrearPago";
 
 const STATE_INICIAL = {
-    observacion: ''
+    metodoPago: '',
+    // numero: ''
 }
 
-const ModalAnularReserva = () => {
-    const { handleModalAnularReserva, modalAnularReserva, reserva, cargando, anularReserva, handleOpenMenu } = useParking();
+const METODOS_PAGO = ['Efectivo', 'Transferencia', 'Debito', 'Credito']
+
+const ModalPagarReservaSalida = () => {
+    const { handleModalPagarReservaSalida, modalPagarReservaSalida, pagarReserva, cargando, reservaSalida } = useParking();
 
     const [ form, setForm ] = useState(STATE_INICIAL)
 
-    useEffect(() => {
-
-        if ( reserva?._id ) {
-            setForm({
-                ...form,
-            })
-            return;
-        }
-        setForm(STATE_INICIAL)
-    }, [reserva])
-
     const handleSubmit = async e => {
         e.preventDefault()
-        const errores = validarAnularReserva(form)
+        const errores = validarCrearPago(form)
         if  ( Object.values(errores).length !== 0 ) {
             for ( let error of Object.values(errores) ) {
                 toast.error(error)
@@ -37,7 +27,7 @@ const ModalAnularReserva = () => {
             return;
         }
 
-        anularReserva(form)
+        pagarReserva(form)
     }
 
     const handleChange = e => {
@@ -46,15 +36,25 @@ const ModalAnularReserva = () => {
             [e.target.name]: e.target.value
         })
     }
-
+    
+    useEffect(() => {
+        if ( reservaSalida?._id ) {
+            setForm({
+                ...form,
+                reserva: reservaSalida._id
+            })
+            return
+        }
+        setForm({
+            ...STATE_INICIAL,
+            reserva: ''
+        })
+    }, [reservaSalida])
 
   return (
 
-    <Transition.Root show={ modalAnularReserva } as={Fragment}>
-        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={() => {
-            handleModalAnularReserva()
-            handleOpenMenu()
-        }}>
+    <Transition.Root show={ modalPagarReservaSalida } as={Fragment}>
+        <Dialog as="div" className="fixed z-10 inset-0 overflow-y-auto" onClose={handleModalPagarReservaSalida}>
             <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
                 <Transition.Child
                     as={Fragment}
@@ -91,10 +91,7 @@ const ModalAnularReserva = () => {
                             <button
                                 type="button"
                                 className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                onClick={ () => {
-                                    handleModalAnularReserva()
-                                    handleOpenMenu()
-                                }}
+                                onClick={ handleModalPagarReservaSalida }
                             >
                             <span className="sr-only">Cerrar</span>
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -107,7 +104,7 @@ const ModalAnularReserva = () => {
                         <div className="sm:flex sm:items-start">
                             <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                                 <Dialog.Title as="h3" className="text-lg leading-6 font-bold text-gray-900">
-                                  Anular Reserva
+                                  Pagar Reserva
                                 </Dialog.Title>
                             
                                 <form 
@@ -116,24 +113,32 @@ const ModalAnularReserva = () => {
                                     noValidate
                                 >
                                     <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6 py-2">
-
                                         <div className="sm:col-span-6">
                                             <label
-                                            htmlFor="observacion"
-                                            className="block text-sm font-medium text-gray-700"
+                                                htmlFor="metodoPago"
+                                                className="block text-sm font-medium text-gray-700"
                                             >
-                                            {" "}
-                                            Observacion{" "}
+                                                {" "}
+                                                Metodo de Pago{" "}
                                             </label>
                                             
                                             <div className="mt-1">
-                                            <textarea
-                                                name="observacion"
-                                                id="observacion"
-                                                value={form.observacion}
-                                                onChange={handleChange}
-                                                className="px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                            />
+                                                <select 
+                                                    className="px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                                                    name="metodoPago" 
+                                                    id="metodoPago"
+                                                    onChange={handleChange}
+                                                >
+                                                    <option value=''>-- Seleccione una Opcion --</option>
+                                                    { METODOS_PAGO.map( (item, i) => 
+                                                        <option 
+                                                            key={`${i}-${item}`} 
+                                                            value={item}
+                                                        >
+                                                            { item }
+                                                        </option>
+                                                    )}
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -142,8 +147,7 @@ const ModalAnularReserva = () => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                handleModalAnularReserva()
-                                                handleOpenMenu()
+                                                handleModalPagarReservaSalida()
                                             }}
                                             className="w-full bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                                         >
@@ -170,5 +174,5 @@ const ModalAnularReserva = () => {
   );
 };
 
-export default ModalAnularReserva;
+export default ModalPagarReservaSalida;
 

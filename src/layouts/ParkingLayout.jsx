@@ -1,17 +1,28 @@
 import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
+import { Outlet, Navigate } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Header from '../components/Header'
 import Sidebar from '../components/Sidebar'
+import AuthSpinner from '../components/AuthSpinner';
+
+import useAuth from '../hooks/useAuth';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function ParkingLayout() {
+
+  const { auth, cargando } = useAuth();
+
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  // para esperar que se llene el state de auth
+  if (cargando) return <AuthSpinner />
+
+  if (Object.values(auth).length === 0) return <Navigate to="/login" />
 
   return (
     <>

@@ -22,9 +22,11 @@ const ParkingProvider = ({ children }) => {
     
     const [ openMenu, setOpenMenu ] = useState(false)
     const [ modalPagarReserva, setModalPagarReserva ] = useState(false);
+    const [ modalPagarReservaSalida, setModalPagarReservaSalida ] = useState(false);
     const [ modalFormReserva, setModalFormReserva ] = useState(false);
     const [ modalTerminarReserva, setModalTerminarReserva ] = useState(false);
     const [ modalAnularReserva, setModalAnularReserva ] = useState(false);
+    const [ modalAnularReservaSalida, setModalAnularReservaSalida ] = useState(false);
     const [ modalFormLote, setModalFormLote ] = useState(false);
     const [ modalEliminarLote, setModaEliminarLote ] = useState(false);
     const [ modalFormTarifa, setModalFormTarifa ] = useState(false);
@@ -33,6 +35,7 @@ const ParkingProvider = ({ children }) => {
     const [ modalCorregirAnulacionReserva, setModalCorregirAnulacionReserva ] = useState(false);
     const [ reservas, setReservas ] = useState([]);
     const [ reserva, setReserva ] = useState({});
+    const [ reservaSalida, setReservaSalida ]= useState({})
     const [ lotes, setLotes ] = useState([]);
     const [ lote, setLote ] = useState({});
     const [ tarifas, setTarifas ] = useState([]);
@@ -81,8 +84,19 @@ const ParkingProvider = ({ children }) => {
     }
 
     const obtenerTarifasEntrada = async () => {
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios(`/tarifas`);
+            const { data } = await clienteAxios(`/tarifas`, config);
             setTarifas(data);
             console.log(tarifas);
         } catch (error) {
@@ -116,8 +130,18 @@ const ParkingProvider = ({ children }) => {
 
     const crearReserva = async ({ tarifa = '', patente = '' }) => {
 
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios.post('/reservas', { tarifa, patente, lote: lote._id });
+            const { data } = await clienteAxios.post('/reservas', { tarifa, patente, lote: lote._id }, config);
             console.log(data);
             const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
             setLotes(lotesActualizados)
@@ -131,8 +155,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const obtenerReservaPorLote = async lote => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios(`/lotes/${lote._id}/reserva`);
+            const { data } = await clienteAxios(`/lotes/${lote._id}/reserva`, config);
             console.log(data);
             setReserva(data)
         } catch (error) {
@@ -141,10 +175,19 @@ const ParkingProvider = ({ children }) => {
     }
 
     const terminarReserva = async () => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-            const { data } = await clienteAxios.put(`/reservas/condicion/${reserva._id}`, { condicion: 'Finalizada' });
-            console.log(data);
+            const { data } = await clienteAxios.put(`/reservas/condicion/${reserva._id}`, { condicion: 'Finalizada' }, config);
+            console.log('de finalizada', data);
             const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
             setLotes(lotesActualizados)
             handleModalTerminarReserva()
@@ -156,12 +199,27 @@ const ParkingProvider = ({ children }) => {
     }
     
     const pagarReserva = async ({ reserva, metodoPago }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios.post('/pagos', { reserva, metodoPago });
+            const { data } = await clienteAxios.post('/pagos', { reserva, metodoPago }, config);
             console.log(data);
             // const lotesActualizados = lotes.map( loteState => loteState._id === data.lote._id ? data.lote : loteState )
             // setLotes(lotesActualizados)
-            handleModalPagarReserva()
+            if ( Object.values(reservaSalida).length !== 0 ) {
+                handleModalPagarReservaSalida()
+            } else {
+                handleModalPagarReserva()
+            }
+      
             toast.success(`Reserva con patente ${data.patente} Pagada Correctamente`)
             obtenerReservas({limite: 3, orden: 'desc'})
             // setOpenMenu(true)
@@ -172,10 +230,27 @@ const ParkingProvider = ({ children }) => {
     }
     
     const anularReserva = async ({ observacion }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios.put(`/reservas/condicion/${reserva._id}`, { condicion: 'Anulada', observacion });
-            console.log(data);
-            handleModalAnularReserva()
+            if ( Object.values(reservaSalida).length !== 0 ) {
+                const { data } = await clienteAxios.put(`/reservas/condicion/${reservaSalida._id}`, { condicion: 'Anulada', observacion }, config);
+                console.log(data);
+                handleModalAnularReservaSalida()
+            } else {
+                const { data } = await clienteAxios.put(`/reservas/condicion/${reserva._id}`, { condicion: 'Anulada', observacion }, config);
+                console.log(data);
+                handleModalAnularReserva()
+            }
+         
             toast.success(`Reserva Anulada Correctamente`)
             obtenerReservas({limite: 3, orden: 'desc'})
             // setOpenMenu(true)
@@ -203,8 +278,19 @@ const ParkingProvider = ({ children }) => {
 
     const obtenerLotes = async () => {
         setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data: { lotes, pagination } } = await clienteAxios(`/lotes?page=${pagina}`);
+            const { data: { lotes, pagination } } = await clienteAxios(`/lotes?page=${pagina}`, config);
             setPagina(pagination.number)
             setLotes(lotes);
             handlePaginator(pagination)
@@ -216,8 +302,19 @@ const ParkingProvider = ({ children }) => {
 
     const obtenerLotesEntrada = async () => {
         setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios(`/lotes`);
+            const { data } = await clienteAxios(`/lotes`, config);
             setLotes(data);
         } catch (error) {
             console.log(error.response);
@@ -226,9 +323,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const eliminarLote = async () => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-          const { data } = await clienteAxios.delete(`/lotes/${lote._id}`);
+          const { data } = await clienteAxios.delete(`/lotes/${lote._id}`, config);
         //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
         //   setLotes(lotesActualizados);
           obtenerLotes()
@@ -242,7 +348,7 @@ const ParkingProvider = ({ children }) => {
     }
 
     const submitLote = async lote => {
-        console.log(lote);
+
         if ( lote?.id ) {
             await editarLote(lote)
         } else {
@@ -253,9 +359,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const crearLote = async ({ numero = '' }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-            const { data } = await clienteAxios.post('/lotes', { numero });
+            const { data } = await clienteAxios.post('/lotes', { numero }, config);
             // setLotes([ ...lotes, data ])
             obtenerLotes()
             handleModalCrearLote()
@@ -267,9 +382,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const editarLote = async ({id ='', numero = '' }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-            const { data } = await clienteAxios.put(`/lotes/${id}`, { numero });
+            const { data } = await clienteAxios.put(`/lotes/${id}`, { numero }, config);
             const lotesActualizados = lotes.map( loteState => loteState._id === data._id ? data : loteState )
             setLotes(lotesActualizados)
             handleModalCrearLote()
@@ -299,8 +423,19 @@ const ParkingProvider = ({ children }) => {
     
     const obtenerTarifas = async () => {
         setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data: { tarifas, pagination } } = await clienteAxios(`/tarifas?page=${pagina}`);
+            const { data: { tarifas, pagination } } = await clienteAxios(`/tarifas?page=${pagina}`, config);
             setPagina(pagination.number)
             setTarifas(tarifas);
             handlePaginator(pagination)
@@ -311,9 +446,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const eliminarTarifa = async () => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-          const { data } = await clienteAxios.delete(`/tarifas/${tarifa._id}`);
+          const { data } = await clienteAxios.delete(`/tarifas/${tarifa._id}`, config);
         //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
         //   setLotes(lotesActualizados);
           obtenerTarifas()
@@ -338,9 +482,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const crearTarifa = async ({ nombre = '', precioBase = 0, precioMinuto = 0, desdeMinuto = 0 }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-            const { data } = await clienteAxios.post('/tarifas', { nombre, precioBase, precioMinuto, desdeMinuto });
+            const { data } = await clienteAxios.post('/tarifas', { nombre, precioBase, precioMinuto, desdeMinuto }, config);
             // setTarifas([ ...tarifas, data ])
             obtenerTarifas()
             handleModalCrearTarifa()
@@ -352,9 +505,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const editarTarifa = async ({id ='', nombre = '', precioBase = 0, precioMinuto = 0, desdeMinuto = 0 }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
 
         try {
-            const { data } = await clienteAxios.put(`/tarifas/${id}`, { nombre, precioBase, precioMinuto, desdeMinuto });
+            const { data } = await clienteAxios.put(`/tarifas/${id}`, { nombre, precioBase, precioMinuto, desdeMinuto }, config);
             const tarifasActualizadas = tarifas.map( tarifaState => tarifaState._id === data._id ? data : tarifaState )
             setTarifas(tarifasActualizadas)
             handleModalCrearTarifa()
@@ -368,8 +530,19 @@ const ParkingProvider = ({ children }) => {
     // PAGOS
     const obtenerPagos = async () => {
         setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data: { pagos, pagination } } = await clienteAxios(`/pagos?page=${pagina}`);
+            const { data: { pagos, pagination } } = await clienteAxios(`/pagos?page=${pagina}`, config);
             console.log(pagos);
             setPagina(pagination.number)
             setPagos(pagos);
@@ -381,9 +554,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const eliminarPago = async () => {
-        console.log('ELiminadno pago ...');
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-          const { data } = await clienteAxios.delete(`/pagos/${pago._id}`);
+          const { data } = await clienteAxios.delete(`/pagos/${pago._id}`, config);
         //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
         //   setLotes(lotesActualizados);
           obtenerPagos()
@@ -397,8 +579,6 @@ const ParkingProvider = ({ children }) => {
     }
 
     const handleModalEliminarPago = pago => {
-        console.log('hola desde pago');
-        console.log(pago);
         setPago(pago)
         setModalEliminarPago(!modalEliminarPago)
     }
@@ -411,8 +591,19 @@ const ParkingProvider = ({ children }) => {
 
     const obtenerReservasPaginadas = async () => {
         setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data: { reservas, pagination } } = await clienteAxios(`/reservas?page=${pagina}`);
+            const { data: { reservas, pagination } } = await clienteAxios(`/reservas?page=${pagina}`, config);
             console.log('Reservas', reservas);
             setPagina(pagination.number)
             setReservasPaginadas(reservas);
@@ -424,9 +615,18 @@ const ParkingProvider = ({ children }) => {
     }
 
     const corregirAnulacionReserva = async ({ metodoPago }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
         try {
-            const { data } = await clienteAxios.post('/pagos', { reserva: reserva._id, metodoPago });
-            console.log(data);
+            const { data } = await clienteAxios.post('/pagos', { reserva: reserva._id, metodoPago }, config);
             const actualizacionReservasPaginadas = reservasPaginadas.map( reservaState => reservaState._id === data._id ? data : reservaState )
             setReservasPaginadas(actualizacionReservasPaginadas);
             setReserva({})
@@ -436,6 +636,21 @@ const ParkingProvider = ({ children }) => {
             console.log(error.response);
             toast.error(error.response.data.msg)
         }
+    }
+
+    // SALIDA
+    const handleReservaSalida = reserva => {
+        setReservaSalida(reserva)
+    }
+
+    const handleModalPagarReservaSalida = () => {
+        setReservaSalida({})
+        setModalPagarReservaSalida(!modalPagarReservaSalida);
+    }
+
+    const handleModalAnularReservaSalida = () => {
+        setReservaSalida({})
+        setModalAnularReservaSalida(!modalAnularReservaSalida)
     }
 
     // const pagarReservaPagina = async ({ reserva, metodoPago }) => {
@@ -569,7 +784,13 @@ const ParkingProvider = ({ children }) => {
                 handleModalEliminarPago,
                 modalEliminarPago,
 
-                
+                // SALIDA
+                reservaSalida,
+                handleReservaSalida,
+                modalPagarReservaSalida,
+                modalAnularReservaSalida,
+                handleModalPagarReservaSalida,
+                handleModalAnularReservaSalida
             }}
         >
             { children }

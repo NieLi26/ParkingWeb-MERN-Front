@@ -14,7 +14,7 @@ const STATE_INICIAL = {
 }
 
 const ModalFormTarifa = () => {
-    console.log('k paso');
+
     const { handleModalCrearTarifa, modalFormTarifa, cargando, tarifa, submitTarifa } = useParking();
 
     const [ id, setId ] = useState('');

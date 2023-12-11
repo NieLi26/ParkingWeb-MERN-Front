@@ -21,7 +21,6 @@ const Entrada = () => {
 
     if (cargando) return <GlobalSpinner />;
 
-
   return (
     <>
         <div className="flex items-center justify-end gap-2 mb-3 p-3 rounded-xl bg-white shadow-lg">

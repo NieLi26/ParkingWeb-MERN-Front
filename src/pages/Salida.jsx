@@ -16,7 +16,7 @@ function classNames(...classes) {
 
 export default function Salida() {
 
-  const { obtenerReservas, reservas, reserva, handleReserva, handleModalPagarReserva, handleModalAnularReserva } = useParking();
+  const { obtenerReservas, reservas, reservaSalida, handleReservaSalida, handleModalPagarReservaSalida, handleModalAnularReservaSalida } = useParking();
 
   const [query, setQuery] = useState('')
 
@@ -24,27 +24,26 @@ export default function Salida() {
     return reserva.patente.toLowerCase().includes(query.toLowerCase())
   })
 
-        
     useEffect(() => {
       if( query === '' ) {
-        console.log('entro');
-        console.log('query vacia', filtroReserva.length);
+        // console.log('entro');
+        // console.log('query vacia', filtroReserva.length);
         obtenerReservas({limite: 3, orden: 'desc'})
         // .then(() => {
         //   setQuery('') 
         // })
         return;
-        // handleReserva([])
+        // handleReservaSalida([])
         // return
       }
-      console.log('query con algo');
+      // console.log('query con algo');
       obtenerReservas({ q: query })
   }, [query])
 
-  const handleSubmit = e => {
-    e.preventDefault();
-    console.log(reserva);
-  }
+  // const handleSubmit = e => {
+  //   e.preventDefault();
+  //   console.log(reserva);
+  // }
 
   return (
     <div className="max-w-md mx-auto sm:max-w-3xl">
@@ -71,24 +70,24 @@ export default function Salida() {
           <p className="mt-1 text-sm text-gray-500">Puede Pagar o Anular su Patente.</p>
         </div>
         <form 
-          onSubmit={handleSubmit}
+          // onSubmit={handleSubmit}
           className="mt-6 sm:flex sm:items-center">
           <label htmlFor="emails" className="sr-only">
             Patente
           </label>
           <div className="relative rounded-md shadow-sm sm:min-w-0 sm:flex-1">
-            <Combobox value={reserva} onChange={handleReserva}>
+            <Combobox value={reservaSalida} onChange={handleReservaSalida}>
                 <div className="relative mt-1">
                     <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                         <Combobox.Input
-                            readOnly={reserva._id ? true : false}
+                            readOnly={reservaSalida._id ? true : false}
                             autoComplete="off"
                             placeholder="Buscar..."
                             className="px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                             displayValue={(item) => item.patente}
                             onChange={(event) => setQuery(event.target.value)}
                         />
-                        { !reserva._id ? (
+                        { !reservaSalida._id ? (
                               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-5 w-5 text-gray-400">
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 15L12 18.75 15.75 15m-7.5-6L12 5.25 15.75 9" />
@@ -98,7 +97,7 @@ export default function Salida() {
                           // <Combobox.Button 
                           // onClick={() => {
                           //   // console.log('feo')
-                          //   handleReserva({})
+                          //   handleReservaSalida({})
                           // }}
                           // className="absolute inset-y-0 right-0 flex items-center pr-2">
                           //     <XIcon 
@@ -107,8 +106,7 @@ export default function Salida() {
                           // </Combobox.Button>
                           <button 
                             onClick={() => {
-                              console.log('feo')
-                              handleReserva({})
+                              handleReservaSalida({})
                             }}
                             className="absolute inset-y-0 right-0 flex items-center pr-2">
                             <XIcon 
@@ -149,20 +147,20 @@ export default function Salida() {
                                 }
                                 value={item}
                             >
-                                {({ reserva, active }) => (
+                                {({ reservaSalida, active }) => (
                                 <>
                                     <LicencePlateIcon 
                                       className={"h-6 w-6 flex-none rounded-full text-indigo-600"}
                                     />
                                     <span
                                     className={`block truncate ${
-                                        reserva ? 'font-medium' : 'font-normal'
+                                      reservaSalida ? 'font-medium' : 'font-normal'
                                     }`}
                                     >
                                     {item.patente}
                                     </span>
                                     
-                                    {reserva ? (
+                                    {reservaSalida ? (
                                       <span
                                           className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                           active ? 'text-white' : 'text-teal-600'
@@ -196,7 +194,7 @@ export default function Salida() {
         </form>
       </div>
 
-      { Object.keys(reserva).length !== 0 && 
+      { Object.values(reservaSalida).length !== 0 && 
         <div className="mt-6 -mb-6 flow-root border p-5 shadow-lg border-gray-200 divide-y divide-gray-200 rounded-xl bg-white">
               <div className="py-6 sm:flex">
                 <div className="flex space-x-4 sm:min-w-0 sm:flex-1 sm:space-x-6 lg:space-x-8">
@@ -206,24 +204,25 @@ export default function Salida() {
                   <div className="pt-1.5 min-w-0 flex-1 sm:pt-0">
                   <dl className="grid grid-cols-1 gap-x-6 gap-y-3 text-sm text-gray-700">
                     <dt className="col-end-1 font-semibold text-gray-900">Estacionamiento N°</dt>
-                    <dd>{reserva.lote.numero}</dd>
+                    <dd>{reservaSalida.lote.numero}</dd>
                     {/* <dt className="col-end-1 font-semibold text-gray-900">Condicion</dt>
                     <dd>{reserva.condicion}</dd> */}
                     <dt className="col-end-1 font-semibold text-gray-900">Tarifa</dt>
-                    <dd>{reserva.tarifa.nombre}</dd>
+                    <dd>{reservaSalida.tarifa.nombre}</dd>
                     <dt className="col-end-1 font-semibold text-gray-900">Entrada</dt>
-                    <dd>{formatearFechaMenu(reserva.entrada)}</dd>
+                    <dd>{formatearFechaMenu(reservaSalida.entrada)}</dd>
                     <dt className="col-end-1 font-semibold text-gray-900">Salida</dt>
-                    <dd>{formatearFechaMenu(reserva.salida)}</dd>
+                    <dd>{formatearFechaMenu(reservaSalida.salida)}</dd>
                     <dt className="col-end-1 font-semibold text-gray-900">Tiempo</dt>
                     {/* <dd>{`${reserva.tiempoTotal.dias} días, ${reserva.tiempoTotal.horas} horas y ${reserva.tiempoTotal.minutos} minutos`}</dd> */}
                     <dd>
-                      {reserva.tiempoTotal.dias > 0 && `${reserva.tiempoTotal.dias} día${palabraPlural(reserva.tiempoTotal.dias)}, `}
-                      {reserva.tiempoTotal.horas > 0 && `${reserva.tiempoTotal.horas} hora${palabraPlural(reserva.tiempoTotal.horas)}, `}
-                      {reserva.tiempoTotal.minutos > 0 && `${reserva.tiempoTotal.minutos} minuto${palabraPlural(reserva.tiempoTotal.minutos)}`}
+                      {reservaSalida.tiempoTotal.dias > 0 && `${reservaSalida.tiempoTotal.dias} Día${palabraPlural(reservaSalida.tiempoTotal.dias)}, `}
+                      {reservaSalida.tiempoTotal.horas > 0 && `${reservaSalida.tiempoTotal.horas} Hora${palabraPlural(reservaSalida.tiempoTotal.horas)}, `}
+                      {reservaSalida.tiempoTotal.minutos > 0 && `${reservaSalida.tiempoTotal.minutos} Minuto${palabraPlural(reservaSalida.tiempoTotal.minutos)}`}
+                      { Object.values(reservaSalida.tiempoTotal).every( valor => valor === 0) && '1 Minuto' }
                     </dd>
                     <dt className="col-end-1 font-semibold text-gray-900">Total</dt>
-                    <dd>{formatearDinero(reserva.precioTotal)}</dd>
+                    <dd>{formatearDinero(reservaSalida.precioTotal)}</dd>
                     {/* <dd className="truncate">
                       <a href={`mailto:${activeOption.email}`} className="text-indigo-600 underline">
                         {activeOption.email}
@@ -235,8 +234,8 @@ export default function Salida() {
                 <div className="mt-6 space-y-4 sm:mt-0 sm:ml-6 sm:flex-none sm:w-40">
                   <button
                     onClick={() => {
-                      handleModalPagarReserva()
-                      handleReserva(reserva)
+                      handleModalPagarReservaSalida()
+                      handleReservaSalida(reservaSalida)
                     }}
                     type="button"
                     className="w-full flex items-center justify-center bg-blue-600 py-2 px-2.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:w-full sm:flex-grow-0"
@@ -245,8 +244,8 @@ export default function Salida() {
                   </button>
                   <button
                     onClick={() => {
-                      handleModalAnularReserva()
-                      handleReserva(reserva)
+                      handleModalAnularReservaSalida()
+                      handleReservaSalida(reservaSalida)
                     }}
                     type="button"
                     className="w-full flex items-center justify-center bg-red-600 py-2 px-2.5 border border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:w-full sm:flex-grow-0"

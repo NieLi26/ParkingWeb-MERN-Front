@@ -1,6 +1,7 @@
 import { Fragment, useEffect } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 import useParking from '../hooks/useParking'
+import useAuth from '../hooks/useAuth'
 import MenuReserva from './MenuReserva'
 import ModalPagarReserva from './ModalPagarReserva'
 import ModalAnularReserva from './ModalAnularReserva'
@@ -12,11 +13,12 @@ import BellIcon from './svg/BellIcon'
 const Header = ({ setSidebarOpen, classNames }) => {
 
     const { handleOpenMenu, obtenerReservas } = useParking();
+    const { cerrarSesion } = useAuth();
 
     const userNavigation = [
-        { name: 'Your Profile', href: '#' },
-        { name: 'Settings', href: '#' },
-        { name: 'Sign out', href: '#' },
+        // { name: 'Your Profile', href: '#' },
+        // { name: 'Settings', href: '#' },
+        { name: 'Cerrar Sesion', href: '#', fn: cerrarSesion },
     ]
 
   return (
@@ -103,8 +105,24 @@ const Header = ({ setSidebarOpen, classNames }) => {
               leaveTo="transform opacity-0 scale-95"
             >
               <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                {userNavigation.map((item) => (
-                  <Menu.Item key={item.name}>
+                {userNavigation.map((item) => {
+                  if ( item.name === 'Cerrar Sesion' ) {
+                    return <Menu.Item key={item.name}>
+                      {({ active }) => (
+                        <button
+                          onClick={cerrarSesion}
+                          className={classNames(
+                            active ? 'bg-gray-100' : '',
+                            'w-full text-start px-4 py-2 text-sm text-gray-700'
+                          )}
+                        >
+                          {item.name}
+                        </button>
+                      )}
+                    </Menu.Item>
+                  }
+
+                  return <Menu.Item key={item.name}>
                     {({ active }) => (
                       <a
                         href={item.href}
@@ -117,7 +135,7 @@ const Header = ({ setSidebarOpen, classNames }) => {
                       </a>
                     )}
                   </Menu.Item>
-                ))}
+                })}
               </Menu.Items>
             </Transition>
           </Menu>
