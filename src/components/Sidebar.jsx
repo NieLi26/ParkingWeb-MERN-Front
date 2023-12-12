@@ -24,6 +24,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
       { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
       { name: 'Reservas', href: '/reservas', icon: ReservaIcon, current: false },
+      { name: 'Usuarios', href: '/usuarios', icon: ReservaIcon, current: false },
       { name: 'Dashboard', href: '/dashboard', icon: DashBoardIcon, current: false },
   ])
 

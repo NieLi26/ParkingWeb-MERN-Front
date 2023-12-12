@@ -4,8 +4,6 @@ export default function validarCrearLote (valores) {
     // Validar el nombre del tarifa
     if ( valores.nombre === '' ) {
         errores.nombre = "El Nombre es obligatorio";
-    } else if ( valores.nombre <= 0 ) {
-        errores.nombre = 'Nombre debe ser mayor a 0'
     }
 
     // Validar el precio por minuto

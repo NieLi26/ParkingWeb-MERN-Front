@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import clienteAxios from "../config/clienteAxios";
-import ModalEliminarPago from "../components/ModalEliminarPago";
 
 const ParkingContext = createContext();
 
@@ -31,6 +30,8 @@ const ParkingProvider = ({ children }) => {
     const [ modalEliminarLote, setModaEliminarLote ] = useState(false);
     const [ modalFormTarifa, setModalFormTarifa ] = useState(false);
     const [ modalEliminarTarifa, setModaEliminarTarifa ] = useState(false);
+    const [ modalFormUsuario, setModalFormUsuario ] = useState(false);
+    const [ modalEliminarUsuario, setModaEliminarUsuario ] = useState(false);
     const [ modalEliminarPago, setModalEliminarPago ] = useState(false);
     const [ modalCorregirAnulacionReserva, setModalCorregirAnulacionReserva ] = useState(false);
     const [ reservas, setReservas ] = useState([]);
@@ -40,6 +41,8 @@ const ParkingProvider = ({ children }) => {
     const [ lote, setLote ] = useState({});
     const [ tarifas, setTarifas ] = useState([]);
     const [ tarifa, setTarifa ] = useState({});
+    const [ usuarios, setUsuarios ] = useState([]);
+    const [ usuario, setUsuario ] = useState({});
     const [ pagos, setPagos ] = useState([]);
     const [ pago, setPago ] = useState({});
     const [ reservasPaginadas, setReservasPaginadas ] = useState([]);
@@ -527,6 +530,129 @@ const ParkingProvider = ({ children }) => {
         }
     }
 
+
+    // USUARIOS
+
+    const handleModalCrearUsuario = () => {
+        setUsuario({})
+        setModalFormUsuario(!modalFormUsuario);
+    }
+
+    const handleModalEditarUsuario = usuario => {
+        setUsuario(usuario)
+        setModalFormUsuario(!modalFormUsuario);
+    }
+
+    const handleModalEliminarUsuario = usuario => {
+        setUsuario(usuario)
+        setModaEliminarTarifa(!modalEliminarUsuario)
+    }
+
+    const obtenerUsuarios = async () => {
+        setCargando(true)
+
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        try {
+            const { data: { usuarios, pagination } } = await clienteAxios(`/usuarios?page=${pagina}`, config);
+            setPagina(pagination.number)
+            setUsuarios(usuarios);
+            handlePaginator(pagination)
+        } catch (error) {
+            console.log(error.response);
+        }
+        setCargando(false)
+    }
+
+    const eliminarUsuario = async () => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        try {
+          const { data } = await clienteAxios.delete(`/usuarios/${usuario._id}`, config);
+        //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
+        //   setLotes(lotesActualizados);
+          obtenerUsuarios()
+          setUsuario({})
+          setModaEliminarUsuario(false)
+          toast.success(data.msg)
+        } catch (error) {
+          console.log(error.response.data.msg);
+          toast.error(error.response.data.msg)
+        }
+    }
+
+    const submitUsuario = async usuario => {
+    
+        if ( usuario?.id ) {
+            await editarUsuario(usuario)
+        } else {
+            const { id, ...usuarioCreate } = usuario
+            await crearUsuario(usuarioCreate)
+        }
+
+    }
+
+    const crearUsuario = async ({ nombre = '', email = '', password = '' }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        try {
+            const { data } = await clienteAxios.post('/usuarios', { nombre, email, password }, config);
+            obtenerUsuarios()
+            handleModalCrearUsuario()
+            toast.success(`usuario ${data.nombre} Creado Correctamente`)
+        } catch (error) {
+            console.log(error);
+            toast.error(error.response.data.msg)
+        }
+    }
+
+    const editarUsuario = async ({ id ='', nombre = '', email = '', password = '' }) => {
+        const token = JSON.parse(localStorage.getItem('token'))
+        if ( !token ) return
+
+        const config = {
+            headers: {
+                "Content-Type": 'application/json',
+                Authorization: `Bearer ${token}`
+            }
+        }
+
+        try {
+            const { data } = await clienteAxios.put(`/usuarios/${id}`, { nombre, email, password }, config);
+            const usuariosActualizados = usuarios.map( usuarioState => usuarioState._id === data._id ? data : usuarioState )
+            setUsuarios(usuariosActualizados)
+            handleModalCrearUsuario()
+            toast.success(`Usuario Actualizado Correctamente`)
+        } catch (error) {
+            console.log(error.response.data.msg);
+            toast.error(error.response.data.msg)
+        }
+    }
+
     // PAGOS
     const obtenerPagos = async () => {
         setCargando(true)
@@ -790,7 +916,19 @@ const ParkingProvider = ({ children }) => {
                 modalPagarReservaSalida,
                 modalAnularReservaSalida,
                 handleModalPagarReservaSalida,
-                handleModalAnularReservaSalida
+                handleModalAnularReservaSalida,
+
+                // USUARIOS
+                modalFormUsuario,
+                modalEliminarUsuario,
+                handleModalCrearUsuario,
+                handleModalEditarUsuario,
+                handleModalEliminarUsuario,
+                obtenerUsuarios,
+                eliminarUsuario,
+                submitUsuario,
+                usuarios, 
+                usuario
             }}
         >
             { children }

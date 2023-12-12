@@ -6,6 +6,7 @@ import Lotes from './pages/Lotes';
 import Tarifas from './pages/Tarifas';
 import Pagos from './pages/Pagos';
 import Reservas from './pages/Reservas';
+import Usuarios from './pages/Usuarios';
 import Home from './pages/Home';
 import DashBoard from './pages/DashBoard';
 import Login from './pages/Login';
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: '/reservas',
         element: <Reservas />
+      },
+      {
+        path: '/usuarios',
+        element: <Usuarios />
       },
       {
         path: '/dashboard',
