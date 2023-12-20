@@ -78,6 +78,7 @@ const AuthProvider = ({ children }) => {
 
     
     const submitLogin = async (form) => {
+        setCargando(true)
 
         try {
             const { data } = await clienteAxios.post('usuarios/login', form)
@@ -88,6 +89,8 @@ const AuthProvider = ({ children }) => {
             console.log(error);
             toast.error(error.response.data.msg)
             throw true;
+        } finally {
+            setCargando(false)
         }
     }
 

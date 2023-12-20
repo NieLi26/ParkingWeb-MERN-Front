@@ -9,6 +9,7 @@ import LoteIcon from './svg/LoteIcon'
 import TarifaIcon from './svg/TarifaIcon'
 import PagoIcon from './svg/PagoIcon'
 import ReservaIcon from './svg/ReservaIcon'
+import UsersIcon from './svg/UsersIcon'
 import DashBoardIcon from './svg/DashBoardIcon'
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
@@ -24,7 +25,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
       { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
       { name: 'Reservas', href: '/reservas', icon: ReservaIcon, current: false },
-      { name: 'Usuarios', href: '/usuarios', icon: ReservaIcon, current: false },
+      { name: 'Usuarios', href: '/usuarios', icon: UsersIcon, current: false },
       { name: 'Dashboard', href: '/dashboard', icon: DashBoardIcon, current: false },
   ])
 

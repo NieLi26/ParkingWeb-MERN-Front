@@ -1,6 +1,4 @@
-.peo {
-  color: red;
-}
+
 .spinner {
     margin: 5px auto;
     width: 50px;
@@ -10,7 +8,7 @@
   }
   
   .spinner > div {
-    background-color: #333;
+    background-color: rgb(255 255 255 / var(--tw-bg-opacity));
     height: 100%;
     width: 6px;
     display: inline-block;

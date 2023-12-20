@@ -4,8 +4,8 @@ import Paginacion from "./Paginacion"
 const headTable = [ 'Nombre', 'Rol']
 
 const TYPE_ROLE = {
-  'ADMIN_ROLE': { color: 'bg-emerald-100 text-emerald-700', nombre: 'Admin'},
-  'OPERADOR_ROLE': { color: 'bg-blue-100 text-blue-700', nombre: 'Operador'},
+  'ADMIN_ROLE': { color: 'bg-esmerald-100 text-esmerald-700', nombre: 'Admin'},
+  'OPERADOR_ROLE': { color: 'bg-gray-100 text-gray-700', nombre: 'Operador'},
 }
 
 
