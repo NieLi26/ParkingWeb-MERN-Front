@@ -1,12 +1,16 @@
 import useParking from "../hooks/useParking"
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import Paginacion from "./Paginacion"
+import SalidaTicket from "./SalidaTicket"
 import { formatearDinero } from "../helpers"
+import PrintIcon from "./svg/PrintIcon"
+import PreviewIcon from './svg/PreviewIcon';
 
 const headTable = ['Patente', 'Total', 'Metodo Pago']
 
 export default function TablePago() {
 
-    const { pagos, handleModalEliminarPago, handleModalEditarTarifa, handleModalCrearTarifa } = useParking()
+    const { pagos, handleModalEliminarPago, handleModalEditarTarifa, handleModalCrearTarifa, handlePago, handleModalPreview } = useParking()
     
     return (
       <div className="px-4 sm:px-6 lg:px-8">
@@ -70,6 +74,34 @@ export default function TablePago() {
                         <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{pago.metodoPago}</td>
 
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                          
+                            <button 
+                              onClick={() => {
+                                handleModalPreview()
+                                handlePago(pago)
+                              }}
+                              className="text-blue-600 hover:text-blue-900 mr-2"
+                            >
+                                <PreviewIcon 
+                                  className={"w-6 h-6"}
+                                />
+                                <span className="sr-only">Print</span>
+                            </button>
+
+                            <PDFDownloadLink
+                              document={<SalidaTicket pago={pago} />}
+                              fileName="entrada-ticket.pdf"
+                            >
+                              <button 
+                                onClick={() => handlePago(pago)}
+                                className="text-green-600 hover:text-green-900 mr-2"
+                              >
+                                  <PrintIcon 
+                                    className={"w-6 h-6"}
+                                  />
+                                  <span className="sr-only">Download Ticket</span>
+                              </button>
+                            </PDFDownloadLink>
                           {/* <button 
                               onClick={() => handleModalEditarTarifa(tarifa)}
                               className="text-yellow-600 hover:text-yellow-900 mr-2"

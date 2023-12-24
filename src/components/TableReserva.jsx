@@ -1,7 +1,15 @@
+import { useState } from 'react';
+import { PDFViewer, PDFDownloadLink } from '@react-pdf/renderer';
 import useParking from "../hooks/useParking"
+import useAuth from "../hooks/useAuth"
 import Paginacion from "./Paginacion"
 import { formatearFechaMenu } from "../helpers"
+import EntradaTicket from "./EntradaTicket"
 import RevertirIcon from "./svg/RevertirIcon"
+import PrintIcon from "./svg/PrintIcon"
+import PreviewIcon from './svg/PreviewIcon';
+
+const ROLES_MAESTROS = ['ADMIN_ROLE', 'SUPER_ROLE']
 
 const headTable = ['Lote', 'Entrada', 'Salida', 'Estado']
 
@@ -12,9 +20,11 @@ const COLOR_CONDICION = {
     'Anulada': 'text-yellow-600 border border-yellow-600 bg-yellow-200',
 }
 
-export default function TablePago() {
+export default function TableReserva() {
 
-    const { reservasPaginadas, handleModalCorregirAnulacionReserva} = useParking()
+    // const [ previewPDF, setPreviewPDF ] = useState(false)
+    const { auth } = useAuth()
+    const { reservasPaginadas, handleModalCorregirAnulacionReserva, handleReserva, handleModalPreview } = useParking()
     
     return (
       <div className="px-4 sm:px-6 lg:px-8">
@@ -82,18 +92,46 @@ export default function TablePago() {
                         </td>
 
                         <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                          { reserva.condicion === 'Anulada' && 
+                          
+                          { (reserva.condicion === 'Anulada' && ROLES_MAESTROS.includes(auth.rol)) && 
                             <button 
-                                onClick={() => handleModalCorregirAnulacionReserva(reserva)}
-                                className="text-yellow-600 hover:text-yellow-900 mr-2"
-                                >
+                              onClick={() => handleModalCorregirAnulacionReserva(reserva)}
+                              className="text-yellow-600 hover:text-yellow-900 mr-2"
+                            >
                                 <RevertirIcon 
                                   className={"w-6 h-6"}
                                 />
-                                <span className="sr-only">Editar</span>
+                                <span className="sr-only">Corregir</span>
                             </button>
                           }
 
+                            <button 
+                              onClick={() => {
+                                handleModalPreview()
+                                handleReserva(reserva)
+                              }}
+                              className="text-blue-600 hover:text-blue-900 mr-2"
+                            >
+                                <PreviewIcon 
+                                  className={"w-6 h-6"}
+                                />
+                                <span className="sr-only">Print</span>
+                            </button>
+
+                            <PDFDownloadLink
+                              document={<EntradaTicket reserva={reserva} />}
+                              fileName="entrada-ticket.pdf"
+                            >
+                              <button 
+                                onClick={() => handleReserva(reserva)}
+                                className="text-green-600 hover:text-green-900 mr-2"
+                              >
+                                  <PrintIcon 
+                                    className={"w-6 h-6"}
+                                  />
+                                  <span className="sr-only">Download Ticket</span>
+                              </button>
+                            </PDFDownloadLink>
                           {/* <button 
                               onClick={() => handleModalEditarTarifa(tarifa)}
                               className="text-yellow-600 hover:text-yellow-900 mr-2"
@@ -126,4 +164,3 @@ export default function TablePago() {
       </div>
     )
 }
-  

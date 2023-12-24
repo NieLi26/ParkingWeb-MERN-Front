@@ -26,7 +26,7 @@ const AuthProvider = ({ children }) => {
             }
 
             try {
-                const { data } = await clienteAxios('usuarios/perfil/token', config)
+                const { data } = await clienteAxios('auth/perfil/token', config)
                 setAuth(data)
             } catch (error) {
                 console.log('entroooo a catch auth');
@@ -81,7 +81,7 @@ const AuthProvider = ({ children }) => {
         setCargando(true)
 
         try {
-            const { data } = await clienteAxios.post('usuarios/login', form)
+            const { data } = await clienteAxios.post('auth/login', form)
             console.log(data);
             localStorage.setItem('token', JSON.stringify(data.token))
             setAuth(data)

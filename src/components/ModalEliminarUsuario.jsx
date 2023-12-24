@@ -1,11 +1,30 @@
 import { Fragment, useState, useEffect } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
+import { toast } from 'react-toastify';
 import Spinner from './Spinner';
 import useParking from '../hooks/useParking';
 
 const ModalEliminarUsuario = () => {
 
-    const { modalEliminarUsuario, handleModalEliminarUsuario, eliminarUsuario, usuario, cargando } = useParking()
+    const [ password, setPassword ] = useState('');
+
+    const { modalEliminarUsuario, handleModalEliminarUsuario, eliminarUsuario, usuario, cargando } = useParking();
+
+    useEffect(() => {
+        setPassword('');
+    }, [usuario])
+
+
+    const handleSubmit = e => {
+        e.preventDefault()
+
+        if ( password === '' ) {
+            toast.error('La Contraseña es Obligatoria');
+            return
+        }
+
+        eliminarUsuario(password)
+    }
  
     return (
         <Transition.Root show={ modalEliminarUsuario } as={Fragment}>
@@ -74,21 +93,51 @@ const ModalEliminarUsuario = () => {
                                 </div>
                             </div>
 
-                            <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
-                                <button
-                                    onClick={() => eliminarUsuario(usuario)}
-                                    disabled={cargando && true}
-                                    type="button"
-                                    className="disabled:opacity-50 disabled:bg-red-600 disabled:cursor-not-allowed w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                                >
-                                    { cargando ? <Spinner /> : 'Eliminar' }
-                                </button>
-                                <button
-                                    onClick={handleModalEliminarUsuario}
-                                    type="button"
-                                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                                > Cancelar</button>
-                            </div>
+                            <form 
+                                onSubmit={handleSubmit}
+                                noValidate
+                                className="space-y-6 mt-2"
+                            >
+                                <div>
+                                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                    Ingrese Contraseña
+                                    </label>
+                                    <div className="mt-1">
+                                    <input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        autoComplete="password"
+                                        value={password}
+                                        onChange={e => setPassword(e.target.value)}
+                                        className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                    />
+                                    </div>
+                                </div>
+
+                                <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                                    <button
+                                        type="submit"
+                                        className="disabled:opacity-50 disabled:bg-red-600 disabled:cursor-not-allowed w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                    >
+                                        { cargando ? <Spinner /> : 'Eliminar' }
+                                    </button>
+                                    {/* <button
+                                        onClick={() => eliminarTarifa(tarifa)}
+                                        disabled={cargando && true}
+                                        type="button"
+                                        className="disabled:opacity-50 disabled:bg-red-600 disabled:cursor-not-allowed w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
+                                    >
+                                        { cargando ? <Spinner /> : 'Eliminar' }
+                                    </button> */}
+                                    <button
+                                        onClick={handleModalEliminarUsuario}
+                                        type="button"
+                                        className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                                    > Cancelar</button>
+                                </div>
+                            </form>
+
                         </div>
                     </Transition.Child>
                 </div>

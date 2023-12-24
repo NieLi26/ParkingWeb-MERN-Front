@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { Dialog, Transition } from '@headlessui/react'
 import useParking from "../hooks/useParking"
+import useAuth from '../hooks/useAuth'
 import XIcon from './svg/XIcon'
 import EntradaIcon from './svg/EntradaIcon'
 import SalidaIcon from './svg/SalidaIcon'
@@ -12,9 +13,12 @@ import ReservaIcon from './svg/ReservaIcon'
 import UsersIcon from './svg/UsersIcon'
 import DashBoardIcon from './svg/DashBoardIcon'
 
+const ROLES_MAESTROS = ['ADMIN_ROLE', 'SUPER_ROLE']
+
 const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
 
     const { handlePagina } = useParking()
+    const { auth } = useAuth()
 
     const location = useLocation()
 
@@ -22,11 +26,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, classNames }) => {
       { name: 'Entrada', href: '/entrada', icon: EntradaIcon, current: true },
       { name: 'Salida', href: '/salida', icon: SalidaIcon, current: false },
       // { name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false },
+      ...(auth.rol === 'SUPER_ROLE' ? [{ name: 'Lotes', href: '/lotes', icon: LoteIcon, current: false }] : []),
       { name: 'Tarifas', href: '/tarifas', icon: TarifaIcon, current: false },
-      { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
+      // { name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false },
+      ...(ROLES_MAESTROS.includes(auth.rol) ? [{ name: 'Pagos', href: '/pagos', icon: PagoIcon, current: false }] : []),
       { name: 'Reservas', href: '/reservas', icon: ReservaIcon, current: false },
-      { name: 'Usuarios', href: '/usuarios', icon: UsersIcon, current: false },
-      { name: 'Dashboard', href: '/dashboard', icon: DashBoardIcon, current: false },
+      // { name: 'Usuarios', href: '/usuarios', icon: UsersIcon, current: false },
+      ...(ROLES_MAESTROS.includes(auth.rol) ? [{ name: 'Usuarios', href: '/usuarios', icon: UsersIcon, current: false }] : []),
+      // { name: 'Dashboard', href: '/dashboard', icon: DashBoardIcon, current: false },
   ])
 
     useEffect(() => {

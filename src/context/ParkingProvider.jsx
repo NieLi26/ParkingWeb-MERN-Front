@@ -19,6 +19,7 @@ const ParkingProvider = ({ children }) => {
         setPagina(pagina)
     }
     
+    const [ modalPreview, setModalPreview ] = useState(false)
     const [ openMenu, setOpenMenu ] = useState(false)
     const [ modalPagarReserva, setModalPagarReserva ] = useState(false);
     const [ modalPagarReservaSalida, setModalPagarReservaSalida ] = useState(false);
@@ -47,6 +48,11 @@ const ParkingProvider = ({ children }) => {
     const [ pago, setPago ] = useState({});
     const [ reservasPaginadas, setReservasPaginadas ] = useState([]);
     
+    const handleModalPreview = () => {
+        setReserva({})
+        setPago({})
+        setModalPreview(!modalPreview)
+    }
 
     const handleOpenMenu = () => {
         // setReservas([])
@@ -448,7 +454,7 @@ const ParkingProvider = ({ children }) => {
         setCargando(false)
     }
 
-    const eliminarTarifa = async () => {
+    const eliminarTarifa = async (password = '') => {
         const token = JSON.parse(localStorage.getItem('token'))
         if ( !token ) return
 
@@ -460,7 +466,7 @@ const ParkingProvider = ({ children }) => {
         }
 
         try {
-          const { data } = await clienteAxios.delete(`/tarifas/${tarifa._id}`, config);
+          const { data } = await clienteAxios.post(`/tarifas/${tarifa._id}`, { password },config);
         //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
         //   setLotes(lotesActualizados);
           obtenerTarifas()
@@ -545,7 +551,7 @@ const ParkingProvider = ({ children }) => {
 
     const handleModalEliminarUsuario = usuario => {
         setUsuario(usuario)
-        setModaEliminarTarifa(!modalEliminarUsuario)
+        setModaEliminarUsuario(!modalEliminarUsuario)
     }
 
     const obtenerUsuarios = async () => {
@@ -572,7 +578,7 @@ const ParkingProvider = ({ children }) => {
         setCargando(false)
     }
 
-    const eliminarUsuario = async () => {
+    const eliminarUsuario = async (password = '') => {
         const token = JSON.parse(localStorage.getItem('token'))
         if ( !token ) return
 
@@ -584,7 +590,7 @@ const ParkingProvider = ({ children }) => {
         }
 
         try {
-          const { data } = await clienteAxios.delete(`/usuarios/${usuario._id}`, config);
+          const { data } = await clienteAxios.post(`/usuarios/${usuario._id}`, { password }, config);
         //   const lotesActualizados = lotes.filter( loteState => loteState._id !== lote._id )
         //   setLotes(lotesActualizados);
           obtenerUsuarios()
@@ -592,7 +598,14 @@ const ParkingProvider = ({ children }) => {
           setModaEliminarUsuario(false)
           toast.success(data.msg)
         } catch (error) {
-          console.log(error.response.data.msg);
+          console.log(error.response.data);
+          if ( Object.getOwnPropertyNames(error.response.data).includes('errors')) {
+            for ( let err of error.response.data.errors ) {
+                toast.error(err.msg)
+            }
+            return
+          }
+
           toast.error(error.response.data.msg)
         }
     }
@@ -707,6 +720,10 @@ const ParkingProvider = ({ children }) => {
     const handleModalEliminarPago = pago => {
         setPago(pago)
         setModalEliminarPago(!modalEliminarPago)
+    }
+
+    const handlePago = pago => {
+        setPago(pago)
     }
 
     // RESERVAS TABLA
@@ -834,6 +851,9 @@ const ParkingProvider = ({ children }) => {
     return (
         <ParkingContext.Provider
             value={{
+                modalPreview,
+                handleModalPreview,
+
                 // MENU HEADER
                 handleOpenMenu,
                 openMenu,
@@ -909,6 +929,8 @@ const ParkingProvider = ({ children }) => {
                 eliminarPago,
                 handleModalEliminarPago,
                 modalEliminarPago,
+                handlePago,
+                pago,
 
                 // SALIDA
                 reservaSalida,

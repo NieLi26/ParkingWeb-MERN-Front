@@ -50,3 +50,27 @@ export const formatearTiempoDigitalClock = fecha => {
     
       return nuevaFecha.toLocaleTimeString('es-ES', opciones);
 }
+
+export const formatearFechaAbreviada = fecha => {
+    const nuevaFecha = new Date(fecha)
+
+    const opciones = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    };
+
+    return nuevaFecha.toLocaleDateString('es-ES', opciones)
+}
+
+export const formatearTiempo = fecha => {
+    const nuevaFecha = new Date(fecha)
+
+    const opciones = {
+        hour: "2-digit",
+        minute: "2-digit",
+    };
+
+    const amPm = nuevaFecha.getHours() < 12 ? "AM" : "PM";
+    return nuevaFecha.toLocaleTimeString('es-ES', opciones) + ' ' + amPm
+}

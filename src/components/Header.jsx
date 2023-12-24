@@ -9,11 +9,12 @@ import DigitalClock from './DigitalClock'
 import SearchIcon from './svg/SearchIcon'
 import MenuAlt2Icon from './svg/MenuAlt2Icon'
 import BellIcon from './svg/BellIcon'
+import UserIcon from './svg/UserIcon'
 
 const Header = ({ setSidebarOpen, classNames }) => {
 
     const { handleOpenMenu, obtenerReservas } = useParking();
-    const { cerrarSesion } = useAuth();
+    const { cerrarSesion, auth } = useAuth();
 
     const userNavigation = [
         // { name: 'Your Profile', href: '#' },
@@ -60,6 +61,13 @@ const Header = ({ setSidebarOpen, classNames }) => {
           </form> */}
         </div>
         <div className="ml-4 flex items-center md:ml-6">
+          <div className='flex items-center gap-2'>
+            <UserIcon 
+              className={'w-6 h-6'}
+            />
+            <span>{auth.nombre.toUpperCase()} ({auth.rol})</span>
+          </div>
+
         <DigitalClock 
               className={'text-[2rem] pointer-events-none'}
           />

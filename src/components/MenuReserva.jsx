@@ -171,6 +171,7 @@ export default function MenuReservas() {
                               {activeOption.tiempoTotal.dias > 0 && `${activeOption.tiempoTotal.dias} día${palabraPlural(activeOption.tiempoTotal.dias)}, `}
                               {activeOption.tiempoTotal.horas > 0 && `${activeOption.tiempoTotal.horas} hora${palabraPlural(activeOption.tiempoTotal.horas)}, `}
                               {activeOption.tiempoTotal.minutos > 0 && `${activeOption.tiempoTotal.minutos} minuto${palabraPlural(activeOption.tiempoTotal.minutos)}`}
+                              { Object.values(activeOption.tiempoTotal).every( valor => valor === 0) && '1 Minuto' }
                             </dd>
                             <dt className="col-end-1 font-semibold text-gray-900">Total</dt>
                             <dd>{formatearDinero(activeOption.precioTotal)}</dd>
